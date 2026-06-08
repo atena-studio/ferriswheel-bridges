@@ -3,14 +3,14 @@
 -- Headless standalone has no debug/commands; the tooling lives here in the bridge and consumes the
 -- standalone's read-only exports (it exercises the REAL state, never a copy). Bridge MAY log.
 --   /ferriswheel tpbooth   -> teleport to the control booth (ground-snapped)
---   /ferriswheel info      -> print the live ride state from exports['atena-std-ferriswheel']:getState
+--   /ferriswheel info      -> print the live ride state from exports['std-ferriswheel']:getState
 
-if GetResourceState('atena-std-ferriswheel') ~= 'started' then return end
+if GetResourceState('std-ferriswheel') ~= 'started' then return end
 
 RegisterCommand('ferriswheel', function(_, args)
     local action = args[1]
     if action == 'tpbooth' then
-        local p = exports['atena-std-ferriswheel']:boothPose()
+        local p = exports['std-ferriswheel']:boothPose()
         if not p then print('[atena-bridge-ferriswheel] booth pose not available'); return end
         CreateThread(function()
             local ped = PlayerPedId()
@@ -24,8 +24,8 @@ RegisterCommand('ferriswheel', function(_, args)
             print(('[atena-bridge-ferriswheel] tp -> booth (%.1f, %.1f, %.1f)'):format(p.x, p.y, z))
         end)
     elseif action == 'info' then
-        local _, _, w = exports['atena-std-ferriswheel']:boothPose()
-        local s = exports['atena-std-ferriswheel']:getState(w or 1)
+        local _, _, w = exports['std-ferriswheel']:boothPose()
+        local s = exports['std-ferriswheel']:getState(w or 1)
         if not s then print('[atena-bridge-ferriswheel] no state'); return end
         print(('[atena-bridge-ferriswheel] wheel %d: mode=%s present=%s running=%s spinning=%s held=%s angle=%.1f platformCar=%d riders=%d')
             :format(s.wheel, tostring(s.mode), tostring(s.operatorPresent), tostring(s.running),

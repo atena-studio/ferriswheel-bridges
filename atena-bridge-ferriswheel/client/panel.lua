@@ -1,10 +1,10 @@
 -- atena-bridge-ferriswheel/client/panel.lua — the operator CONTROL PANEL (presentation, bridge-side).
 --
--- The ferriswheel standalone is headless: it exposes read-only state (exports['atena-std-ferriswheel']:getState /
+-- The ferriswheel standalone is headless: it exposes read-only state (exports['std-ferriswheel']:getState /
 -- boothPose) and accepts intents (ferriswheel:op:*). THIS bridge owns the presentation: the [E] booth
 -- prompt + the CEF panel + forwarding the lever actions as intents. Inert without the standalone.
 
-if GetResourceState('atena-std-ferriswheel') ~= 'started' then return end
+if GetResourceState('std-ferriswheel') ~= 'started' then return end
 
 local OPEN_KEY = 38   -- INPUT_PICKUP (E)
 local panelOpen = false
@@ -14,14 +14,14 @@ local boothPos, TW
 -- a presentation tunable owned by this bridge (Bridge.promptDist), not the standalone.
 CreateThread(function()
     while not boothPos do
-        local p, _, w = exports['atena-std-ferriswheel']:boothPose()
+        local p, _, w = exports['std-ferriswheel']:boothPose()
         if p then boothPos, TW = p, w or 1 end
         if not boothPos then Wait(500) end
     end
 end)
 
 local function pushState()
-    local s = exports['atena-std-ferriswheel']:getState(TW or 1)
+    local s = exports['std-ferriswheel']:getState(TW or 1)
     if not s then return end
     s.action = 'state'
     SendNUIMessage(s)
@@ -44,16 +44,16 @@ end
 
 -- ---- NUI callbacks -> standalone intents ----------------------------------
 RegisterNUICallback('run', function(data, cb)
-    TriggerServerEvent('atena-std-ferriswheel:op:run', data and data.run and true or false); cb('ok')
+    TriggerServerEvent('std-ferriswheel:op:run', data and data.run and true or false); cb('ok')
 end)
-RegisterNUICallback('step', function(_, cb) TriggerServerEvent('atena-std-ferriswheel:op:step'); cb('ok') end)
-RegisterNUICallback('estop', function(_, cb) TriggerServerEvent('atena-std-ferriswheel:op:estop'); cb('ok') end)
-RegisterNUICallback('callOperator', function(_, cb) TriggerServerEvent('atena-std-ferriswheel:op:callOperator'); cb('ok') end)
-RegisterNUICallback('dismissOperator', function(_, cb) TriggerServerEvent('atena-std-ferriswheel:op:dismissOperator'); cb('ok') end)
+RegisterNUICallback('step', function(_, cb) TriggerServerEvent('std-ferriswheel:op:step'); cb('ok') end)
+RegisterNUICallback('estop', function(_, cb) TriggerServerEvent('std-ferriswheel:op:estop'); cb('ok') end)
+RegisterNUICallback('callOperator', function(_, cb) TriggerServerEvent('std-ferriswheel:op:callOperator'); cb('ok') end)
+RegisterNUICallback('dismissOperator', function(_, cb) TriggerServerEvent('std-ferriswheel:op:dismissOperator'); cb('ok') end)
 RegisterNUICallback('close', function(_, cb) closePanel(); cb('ok') end)
 
 -- Action refused by the standalone (proximity/mode/held) -> surface it on the panel.
-RegisterNetEvent('atena-std-ferriswheel:op:denied', function(reason)
+RegisterNetEvent('std-ferriswheel:op:denied', function(reason)
     if panelOpen then SendNUIMessage({ action = 'toast', reason = tostring(reason) }) end
 end)
 

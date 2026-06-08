@@ -1,9 +1,9 @@
 -- atena-bridge-ferriswheel — the ferriswheel <-> atena integration + PRESENTATION (bridge doctrine,
 -- atena-framework §6; standalone-resource §2.1 headless). The ferriswheel standalone is headless:
 -- this bridge OWNS the control panel (CEF), the [E] booth interaction, the boarding interaction and
--- the dev tooling, built on the standalone's read-only exports (exports['atena-std-ferriswheel']:*) + intents
+-- the dev tooling, built on the standalone's read-only exports (exports['std-ferriswheel']:*) + intents
 -- (ferriswheel:op:* / :board / :alight). It also injects atena's authorizer + inbound guard.
--- A bridge is EXEMPT from the anti-bias rule: calling exports['atena-std-ferriswheel']:* / Atena.* is its nature.
+-- A bridge is EXEMPT from the anti-bias rule: calling exports['std-ferriswheel']:* / Atena.* is its nature.
 -- Each file self-guards (GetResourceState) so it stays INERT unless its dependencies are started.
 
 fx_version 'cerulean'
