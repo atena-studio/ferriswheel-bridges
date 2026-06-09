@@ -34,8 +34,9 @@ client_scripts {
 }
 
 -- The bespoke CEF control panel (presentation lives in the bridge, never in the standalone).
--- nui/ is the BUILT output of web/ (Vite + React + Tailwind — `npm run build` in web/). Hashed
--- asset names => recreate the dev container after a rebuild (txAdmin can't `refresh`).
+-- nui/ is the COMPILED output; the SOURCE lives in the PRIVATE std-ferriswheel/web/ (Vite+React+Tailwind).
+-- Build with `.\.claude\bin\build-nui.ps1 ferriswheel` (std/web -> bridge/nui). Hashed asset names =>
+-- recreate the dev container after a rebuild (txAdmin can't `refresh`).
 ui_page 'nui/index.html'
 files {
     'nui/index.html',
